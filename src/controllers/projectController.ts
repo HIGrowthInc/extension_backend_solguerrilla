@@ -153,7 +153,7 @@ export default class ProjectController {
                 var contentType = "text/plain";
                 if(ext === ".png"){
                   contentType = "image/png"
-                }else if(ext ==="jpg"){
+                }else if(ext ==="jpg" || ext ===".jpeg" ){
                   contentType = "image/jpeg"
                 }
             res.set('Access-Control-Allow-Origin', '*');

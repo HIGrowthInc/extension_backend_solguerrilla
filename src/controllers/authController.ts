@@ -3,7 +3,7 @@ import { IUser } from 'src/models/users';
 import * as bcrypt from "bcryptjs";
 import UserRepository from '../repositories/users';
 import { generateRandom, REFRESH_CONFIG } from '../utils';
-import { sendEmail } from '../utils/nodemailer';
+import { EmailContent } from '../utils/nodemailer';
 import CRedis from '../utils/redis';
 import AccountTypeRepository from '../repositories/account_type';
 import { COOKIE_OPTIONS, getRefreshToken, getToken } from '../utils/refreshToken';
@@ -162,7 +162,7 @@ export default class AuthController {
         var contentType = "text/plain";
         if(ext === ".png"){
           contentType = "image/png"
-        }else if(ext ===".jpg"){
+        }else if(ext ===".jpg" || ext ===".jpeg"){
           contentType = "image/jpeg"
         }
         res.set('Access-Control-Allow-Origin', '*');
@@ -196,7 +196,7 @@ export default class AuthController {
         console.log("random",random)
         await this.redisHandle.setObject(random.toString(),{email:email},1000*60);
         const base_url = req.protocol + '://' + req.get('host')
-        await sendEmail(email,"Verify Email","<html><body><a href="+base_url+"/setNewPassword/"+random+">"+base_url+"/setNewPassword/"+random+"</a></body></html>");
+        await EmailContent(email,"Verify Email","<html><body><a href="+base_url+"/setNewPassword/"+random+">"+base_url+"/setNewPassword/"+random+"</a></body></html>");
         // await sendEmail(email,"Verify Email","<html><body><h1>"+random+"</h1></body></html>");
         res.status(200).json({
           status:true,
@@ -275,7 +275,7 @@ export default class AuthController {
       try{
         
           await this.redisHandle.setObject(email,{random:random,password:password},1000*60);
-          await sendEmail(email,"Verify Email","<html><body><h1>"+random+"</h1></body></html>");
+          await EmailContent(email,"Verify Email","<html><body><h1>"+random+"</h1></body></html>");
           res.status(200).json({
             status:true,
             message:"email is sent"
@@ -373,7 +373,7 @@ export default class AuthController {
         var contentType = "text/plain";
         if(ext === ".png"){
           contentType = "image/png"
-        }else if(ext ===".jpg" || ".jpeg"){
+        }else if(ext ===".jpg" ||ext ===".jpeg" ){
           contentType = "image/jpeg"
         }
         res.set('Access-Control-Allow-Origin', '*');

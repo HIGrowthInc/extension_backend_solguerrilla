@@ -375,6 +375,25 @@ export default class AdminController {
             return res.status(500).json({status:false,error:error});
         }
     }
+
+    updateAccountRole = async (req: Request, res: Response, next: NextFunction) =>{
+        const {userid, status} = req.body;
+        if(!userid || !status){
+            return res.status(200).json({status:false,message:"Invalid Parametes"});
+        }
+        try{
+            const updateAccount = await UsersRepository.readById(userid);
+            if(!updateAccount){
+                return res.status(200).json({status:false,message:"There is no record to update"});
+            }
+            updateAccount.is_admin = status;
+            const updateAccountRole = await UsersRepository.update(updateAccount);
+            return res.status(200).json({status:true,record:updateAccount});
+        }catch(error){
+            return res.status(500).json({status:false,error:error});
+        }
+    }
+    
     saveBack = async (req:Request,res:Response, next:NextFunction) =>{
         try{
             const img_url = req['file'].filename;
@@ -537,7 +556,7 @@ export default class AdminController {
         var contentType = "text/plain";
         if(ext === ".png"){
           contentType = "image/png"
-        }else if(ext ===".jpg"){
+        }else if(ext ===".jpg" || ext ===".jpeg"){
           contentType = "image/jpeg"
         }
         res.set('Access-Control-Allow-Origin', '*');

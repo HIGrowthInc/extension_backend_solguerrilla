@@ -14,7 +14,7 @@ const app: Application = express();
 
 
 const server: Server = new Server(app);
-const port: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const port: number = 3000;
 // Have Node serve the files for our built React app
 const HttpServer = http.createServer(app);
 const wss = new ServerSocket(HttpServer);

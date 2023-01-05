@@ -31,6 +31,7 @@ public router = Router();
         this.router.route("/creatAccount").post(passport.authenticate('jwt'),adminChecker,this.adminController.createAccount);
         this.router.route("/updateAccount").post(passport.authenticate('jwt'),adminChecker,this.adminController.updateAccount);
         this.router.route("/deleteAccount").post(passport.authenticate('jwt'),adminChecker,this.adminController.deleteAccount);
+        this.router.route("/updateAccountRole").post(passport.authenticate('jwt'),adminChecker,this.adminController.updateAccountRole);
         this.router.route("/getUsers").post(passport.authenticate('jwt'),adminChecker,this.adminController.getUsers)
         this.router.route("/saveLink").post(passport.authenticate('jwt'),adminChecker,this.adminController.saveLink);
         this.router.route("/create_back").post(passport.authenticate('jwt'),adminChecker,uploadBackground.single("img_file"),this.adminController.saveBack)

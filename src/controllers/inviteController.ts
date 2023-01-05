@@ -4,7 +4,7 @@ import * as bcrypt from "bcryptjs";
 import UserRepository from '../repositories/users';
 import { generateHash, generateRandom } from '../utils';
 import InviteRepository from "../repositories/invite";
-import { sendEmail } from '../utils/nodemailer';
+import { EmailContent } from '../utils/nodemailer';
 import CRedis from '../utils/redis';
 import { IInvite } from 'src/models/invite';
 import ConnectionRepository from '../repositories/connection';
@@ -42,7 +42,7 @@ export default class InviteController {
             const random = generateRandom();    
             await this.redisHandle.setObject(email,{random:random,password:password,first_name:first_name,last_name:last_name},1000*60);
             console.log("email",email);
-            await sendEmail(email,"Verify Email","<html><body><h1>"+random+"</h1></body></html>");
+            await EmailContent(email,"Verify Email","<html><body><h1>"+random+"</h1></body></html>");
             res.status(200).json({
                 status:true,
                 message:"Email is sent.please verify your email."
@@ -165,7 +165,7 @@ export default class InviteController {
           return;
         }
         const base_url = req.protocol + '://' + req.get('host')
-        await sendEmail(toEmail,"Verify Email","<html><body><a href="+base_url+"/invite/sign_up/"+hash+">"+base_url+"/"+hash+"</a></body></html>");
+        await EmailContent(toEmail,"Verify Email","<html><body><a href="+base_url+"/invite/sign_up/"+hash+">"+base_url+"/"+hash+"</a></body></html>");
         const inviteData = InviteRepository.makeInviteData(fromUser.id!,toEmail,0,0,hash,new Date(),null,null);
         console.log("invitedata",inviteData)
         const inviteRecord  = await InviteRepository.create(inviteData as IInvite);
